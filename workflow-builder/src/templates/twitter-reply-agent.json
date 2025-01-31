@@ -1,0 +1,71 @@
+{
+  "name": "Twitter Reply Agent",
+  "description": "Automated workflow to process and reply to tweets using AI",
+  "version": "1.0.0",
+  "nodes": [
+    {
+      "id": "webhook-1",
+      "type": "webhook",
+      "position": { "x": 400, "y": 50 },
+      "data": {
+        "label": "Webhook Configuration",
+        "method": "POST",
+        "path": "/webhook/twitter",
+        "description": "Receives incoming tweets",
+        "responseMode": true,
+        "authenticationToken": "",
+        "responseTemplate": ""
+      }
+    },
+    {
+      "id": "agent-1",
+      "type": "agent",
+      "position": { "x": 400, "y": 250 },
+      "data": {
+        "label": "Agent",
+        "provider": "openai",
+        "model": "gpt-4-turbo-preview",
+        "temperature": 0.7,
+        "instructions": "Process the input and generate a response"
+      }
+    },
+    {
+      "id": "twitter-1",
+      "type": "twitter",
+      "position": { "x": 400, "y": 450 },
+      "data": {
+        "label": "X (Twitter)",
+        "apiKey": "",
+        "apiSecret": "",
+        "accessToken": "",
+        "accessTokenSecret": "",
+        "operation": "postReply",
+        "tweetText": "",
+        "tweetId": "",
+        "username": "",
+        "mediaUrls": [],
+        "includeRetweets": false,
+        "includeReplies": false,
+        "maxResults": 10
+      }
+    }
+  ],
+  "edges": [
+    {
+      "id": "webhook-to-agent",
+      "source": "webhook-1",
+      "target": "agent-1",
+      "type": "custom",
+      "animated": true,
+      "style": { "stroke": "#1976d2", "strokeWidth": 2 }
+    },
+    {
+      "id": "agent-to-twitter",
+      "source": "agent-1",
+      "target": "twitter-1",
+      "type": "custom",
+      "animated": true,
+      "style": { "stroke": "#1976d2", "strokeWidth": 2 }
+    }
+  ]
+}

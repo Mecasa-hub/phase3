@@ -1,0 +1,243 @@
+.App {
+  text-align: center;
+  height: 100vh;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+}
+
+.App-header {
+  background-color: #282c34;
+  padding: 1rem;
+  color: white;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 100;
+}
+
+.App-header h1 {
+  margin: 0;
+  font-size: 1.5rem;
+}
+
+.App-main {
+  flex: 1;
+  background-color: #fafafa;
+  position: relative;
+  display: flex;
+  overflow: hidden;
+}
+
+/* ReactFlow styles */
+.react-flow {
+  background-color: #fafafa;
+  background-image: 
+    linear-gradient(to right, rgba(0, 0, 0, 0.02) 1px, transparent 1px),
+    linear-gradient(to bottom, rgba(0, 0, 0, 0.02) 1px, transparent 1px);
+  background-size: 25px 25px;
+}
+
+.react-flow__node {
+  width: 140px;
+  max-width: 160px;
+  background-color: white;
+  padding: 4px;
+  border-radius: 3px;
+  border: 1px solid #e0e0e0;
+  font-size: 10px;
+  box-shadow: 0 1px 1px rgba(0, 0, 0, 0.05);
+  transition: all 0.2s ease;
+}
+
+.react-flow__node-header {
+  display: flex;
+  align-items: center;
+  margin-bottom: 4px;
+  padding-bottom: 3px;
+  border-bottom: 1px solid #f0f0f0;
+}
+
+.react-flow__node-header img {
+  width: 12px;
+  height: 12px;
+  margin-right: 4px;
+}
+
+.react-flow__handle {
+  width: 4px;
+  height: 4px;
+  background-color: #666;
+  border: 1px solid white;
+}
+
+.react-flow__handle-top {
+  top: -2px;
+}
+
+.react-flow__handle-bottom {
+  bottom: -2px;
+}
+
+/* Input fields in nodes */
+.react-flow__node input,
+.react-flow__node select {
+  width: 100%;
+  padding: 3px 4px;
+  border: 1px solid #e0e0e0;
+  border-radius: 2px;
+  font-size: 10px;
+  background-color: #f5f5f5;
+  margin: 2px 0;
+}
+
+/* Node type specific styles */
+.react-flow__node-httpRequest,
+.react-flow__node-webhook,
+.react-flow__node-graphql,
+.react-flow__node-url {
+  border-left: 2px solid #4CAF50;
+}
+
+.react-flow__node-telegram,
+.react-flow__node-gmail,
+.react-flow__node-whatsapp,
+.react-flow__node-twilio,
+.react-flow__node-discord,
+.react-flow__node-slack {
+  border-left: 2px solid #2196F3;
+}
+
+.react-flow__node-mysql,
+.react-flow__node-postgres,
+.react-flow__node-redis,
+.react-flow__node-elasticsearch {
+  border-left: 2px solid #FF9800;
+}
+
+.react-flow__node-github,
+.react-flow__node-gitlab,
+.react-flow__node-bitbucket {
+  border-left: 2px solid #9C27B0;
+}
+
+.react-flow__node-jira,
+.react-flow__node-trello,
+.react-flow__node-notion,
+.react-flow__node-asana,
+.react-flow__node-clickup {
+  border-left: 2px solid #E91E63;
+}
+
+.react-flow__node-agent,
+.react-flow__node-calculator {
+  border-left: 2px solid #607D8B;
+}
+
+.react-flow__node-dropbox,
+.react-flow__node-googleDrive {
+  border-left: 2px solid #00BCD4;
+}
+
+.react-flow__node-chat,
+.react-flow__node-twitter {
+  border-left: 2px solid #03A9F4;
+}
+
+/* Controls and minimap */
+.react-flow__controls {
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.1);
+  border: none;
+  border-radius: 3px;
+  padding: 2px;
+}
+
+.react-flow__controls button {
+  background-color: white;
+  border: none;
+  border-radius: 2px;
+  padding: 2px;
+  margin: 1px;
+  cursor: pointer;
+}
+
+.react-flow__controls button:hover {
+  background-color: #f5f5f5;
+}
+
+/* Node spacing */
+.react-flow__node {
+  margin: 6px 0;
+}
+
+/* Node selection */
+.react-flow__node.selected {
+  box-shadow: 0 0 0 1px #1a192b;
+}
+
+/* Edge styles */
+.react-flow__edge-path {
+  stroke: #999;
+  stroke-width: 1;
+}
+
+.react-flow__edge.selected .react-flow__edge-path {
+  stroke: #1a192b;
+  stroke-width: 1.5;
+}
+
+/* Connection line */
+.react-flow__connection-path {
+  stroke: #1a192b;
+  stroke-width: 1;
+}
+
+/* Node content */
+.node-content {
+  padding: 4px;
+}
+
+.node-label {
+  font-weight: 500;
+  color: #333;
+  margin-bottom: 4px;
+  font-size: 10px;
+}
+
+.node-description {
+  color: #666;
+  font-size: 9px;
+  margin-bottom: 4px;
+}
+
+/* Connection handles */
+.react-flow__handle-connecting {
+  background: #ff6b6b;
+}
+
+.react-flow__handle-valid {
+  background: #4CAF50;
+}
+
+/* Custom scrollbar */
+.react-flow__node::-webkit-scrollbar {
+  width: 3px;
+}
+
+.react-flow__node::-webkit-scrollbar-track {
+  background: #f1f1f1;
+}
+
+.react-flow__node::-webkit-scrollbar-thumb {
+  background: #888;
+  border-radius: 1.5px;
+}
+
+.react-flow__node::-webkit-scrollbar-thumb:hover {
+  background: #555;
+}
+
+/* Hover effects */
+.react-flow__node:hover {
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+}

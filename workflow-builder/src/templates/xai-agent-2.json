@@ -1,0 +1,123 @@
+{
+  "name": "XAI Agent 2.0",
+  "description": "Advanced AI agent for automated tweet responses with enhanced capabilities",
+  "version": "1.0.0",
+  "nodes": [
+    {
+      "id": "webhook-1",
+      "type": "webhook",
+      "position": { "x": 400, "y": 50 },
+      "data": {
+        "label": "Schedule Trigger",
+        "interval": 15,
+        "unit": "minutes",
+        "method": "GET",
+        "path": "/trigger/schedule",
+        "responseMode": false,
+        "isConnectable": true
+      },
+      "draggable": true,
+      "connectable": true
+    },
+    {
+      "id": "http-1",
+      "type": "httpRequest",
+      "position": { "x": 400, "y": 200 },
+      "data": {
+        "label": "HTTP Request",
+        "method": "GET",
+        "url": "https://api.twitter.com/2/tweets/search/recent",
+        "timeout": 30000,
+        "queryParams": [
+          { "key": "query", "value": "@BurpingTerminal" },
+          { "key": "tweet.fields", "value": "created_at" },
+          { "key": "max_results", "value": "10" }
+        ],
+        "headers": [
+          { 
+            "key": "Authorization", 
+            "value": "Bearer YOUR_TWITTER_BEARER_TOKEN"
+          }
+        ],
+        "auth": {
+          "type": "none",
+          "username": "",
+          "password": "",
+          "token": "",
+          "apiKey": "",
+          "apiKeyName": "X-API-Key"
+        },
+        "body": {
+          "type": "none",
+          "content": ""
+        },
+        "advanced": {
+          "followRedirects": true,
+          "validateStatus": true,
+          "transformResponse": false,
+          "transformScript": ""
+        },
+        "isConnectable": true
+      },
+      "draggable": true,
+      "connectable": true
+    },
+    {
+      "id": "agent-1",
+      "type": "agent",
+      "position": { "x": 400, "y": 350 },
+      "data": {
+        "label": "OpenAI",
+        "provider": "openai",
+        "model": "gpt-4",
+        "assistantId": "YOUR_OPENAI_ASSISTANT_ID",
+        "temperature": 0.7,
+        "maxTokens": 2000,
+        "instructions": "Process the tweet and generate a response",
+        "isConnectable": true
+      },
+      "draggable": true,
+      "connectable": true
+    },
+    {
+      "id": "twitter-1",
+      "type": "twitter",
+      "position": { "x": 400, "y": 500 },
+      "data": {
+        "label": "X (Twitter)",
+        "operation": "postReply",
+        "text": "={{ $json.output }}",
+        "inReplyToTweetId": "={{ $('HTTP Request').item.json.body.data[0].id }}",
+        "isConnectable": true
+      },
+      "draggable": true,
+      "connectable": true
+    }
+  ],
+  "edges": [
+    {
+      "id": "webhook-to-http",
+      "source": "webhook-1",
+      "target": "http-1",
+      "type": "custom",
+      "animated": true,
+      "style": { "stroke": "#1976d2", "strokeWidth": 1.5 }
+    },
+    {
+      "id": "http-to-agent",
+      "source": "http-1",
+      "target": "agent-1",
+      "type": "custom",
+      "animated": true,
+      "style": { "stroke": "#1976d2", "strokeWidth": 1.5 }
+    },
+    {
+      "id": "agent-to-twitter",
+      "source": "agent-1",
+      "target": "twitter-1",
+      "type": "custom",
+      "animated": true,
+      "style": { "stroke": "#1976d2", "strokeWidth": 1.5 }
+    }
+  ]
+}
