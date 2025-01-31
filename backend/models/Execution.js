@@ -17,10 +17,36 @@ const ExecutionSchema = new mongoose.Schema({
     required: true,
   },
   results: [{
-    description: String,
-    result: mongoose.Schema.Types.Mixed,
-    error: String,
+    nodeId: {
+      type: String,
+      required: true
+    },
+    nodeType: String,
+    result: {
+      success: {
+        type: Boolean,
+        required: true
+      },
+      data: mongoose.Schema.Types.Mixed,
+      error: String
+    }
   }],
+  startedAt: {
+    type: Date,
+    default: Date.now
+  },
+  completedAt: {
+    type: Date
+  },
+  duration: {
+    type: Number,
+    get: function() {
+      if (this.completedAt && this.startedAt) {
+        return this.completedAt - this.startedAt;
+      }
+      return null;
+    }
+  },
   executedAt: {
     type: Date,
     default: Date.now,

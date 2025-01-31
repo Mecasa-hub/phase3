@@ -1,7 +1,7 @@
 const cron = require('node-cron');
 const Workflow = require('../models/Workflow');
 const Execution = require('../models/Execution');
-const actionExecutor = require('../utils/actionExecutor');
+const workflowExecutor = require('./workflowExecutor');
 
 class Scheduler {
   constructor() {
@@ -28,31 +28,46 @@ class Scheduler {
   }
 
   async executeWorkflow(workflow) {
-    const results = [];
-    let status = 'success';
+    try {
+      const startTime = new Date();
+      const { results, success, error } = await workflowExecutor.executeWorkflow(workflow);
+      const completedTime = new Date();
 
-    for (const step of workflow.steps) {
-      try {
-        const result = await actionExecutor.execute(step.action, JSON.parse(step.params));
-        results.push({ description: step.description, result });
-      } catch (stepError) {
-        results.push({ description: step.description, error: stepError.message });
-        status = 'failed';
+      const execution = new Execution({
+        workflow: workflow._id,
+        user: workflow.user,
+        status: success ? 'success' : 'failed',
+        results: Object.entries(results).map(([nodeId, result]) => ({
+          nodeId,
+          nodeType: workflow.nodes.find(n => n.id === nodeId)?.type,
+          result
+        })),
+        startedAt: startTime,
+        completedAt: completedTime
+      });
+      await execution.save();
+
+      // Update lastRun and nextRun
+      workflow.schedule.lastRun = startTime;
+      workflow.schedule.nextRun = cron.schedule(workflow.schedule.cronExpression).nextDate().toDate();
+      await workflow.save();
+
+      if (!success) {
+        console.error(`Scheduled workflow ${workflow._id} failed:`, error);
       }
+    } catch (error) {
+      console.error(`Error executing scheduled workflow ${workflow._id}:`, error);
+      
+      const execution = new Execution({
+        workflow: workflow._id,
+        user: workflow.user,
+        status: 'failed',
+        results: [],
+        startedAt: new Date(),
+        completedAt: new Date(),
+      });
+      await execution.save();
     }
-
-    const execution = new Execution({
-      workflow: workflow._id,
-      user: workflow.user,
-      status,
-      results,
-    });
-    await execution.save();
-
-    // Update lastRun and nextRun
-    workflow.schedule.lastRun = new Date();
-    workflow.schedule.nextRun = cron.schedule(workflow.schedule.cronExpression).nextDate().toDate();
-    await workflow.save();
   }
 
   updateWorkflowSchedule(workflow) {

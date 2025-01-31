@@ -2,6 +2,7 @@ const express = require('express');
 const cors = require('cors');
 const mongoose = require('mongoose');
 const path = require('node:path');
+const fs = require('node:fs');
 const config = require('../config/config');
 const authRoutes = require('../routes/auth');
 const authMiddleware = require('../middleware/auth');
@@ -19,17 +20,39 @@ app.use(cors({
 }));
 app.use(express.json());
 
-// Routes
-app.use('/api/auth', authRoutes);
-app.use('/api/workflows', require('../routes/workflows'));
-
-// Serve static files from the React frontend app
-app.use(express.static(path.join(__dirname, '../../frontend/build')));
-
-// Catch-all route to serve the frontend
-app.get('*', (req, res) => {
-  res.sendFile(path.join(__dirname, '../../frontend/build', 'index.html'));
+// Error handling middleware
+app.use((err, req, res, next) => {
+  console.error(err.stack);
+  res.status(500).json({ error: 'Something went wrong!' });
 });
+
+// Routes with error handling
+app.use('/api/auth', (req, res, next) => {
+  try {
+    authRoutes(req, res, next);
+  } catch (error) {
+    next(error);
+  }
+});
+
+app.use('/api/workflows', (req, res, next) => {
+  try {
+    require('../routes/workflows')(req, res, next);
+  } catch (error) {
+    next(error);
+  }
+});
+
+// Only serve static files if frontend build exists
+const frontendBuildPath = path.join(__dirname, '../../frontend/build');
+if (fs.existsSync(frontendBuildPath)) {
+  app.use(express.static(frontendBuildPath));
+  
+  // Catch-all route to serve the frontend
+  app.get('*', (req, res) => {
+    res.sendFile(path.join(frontendBuildPath, 'index.html'));
+  });
+}
 
 // Start server
 const PORT = process.env.PORT || 5000;
